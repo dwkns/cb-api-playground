@@ -1,15 +1,11 @@
 {
   "name": "cb",
   "type": "module",
-  "devDependencies": {
-    "vitest": "^4.0.15"
-  },
   "author": "dazza",
   "main": "app/index.js",
   "scripts": {
     "start": "node app/index.js",
-    "dev": "npm run start",
-    "test": "vitest run"
+    "dev": "npm run start"
   },
   "dependencies": {
     "@js-temporal/polyfill": "^0.5.1",

@@ -1,0 +1,15 @@
+{
+  "name": "cb",
+  "packageManager": "yarn@4.9.2",
+  "devDependencies": {
+    "vitest": "^4.0.15"
+  },
+  "author": "dazza",
+  "main": "app/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node app/index.js",
+    "dev": "npm run start",
+    "test": "vitest run"
+  }
+}

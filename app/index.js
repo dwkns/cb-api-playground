@@ -1,7 +1,11 @@
-const { sign } = require('jsonwebtoken');
-const crypto = require('crypto');
-const { Temporal } = require('@js-temporal/polyfill'); // Help with dates
-require('dotenv').config({ path: require('find-config')('.env') });
+import jsonwebtoken from 'jsonwebtoken'; 
+const { sign } = jsonwebtoken; // jsonwebtoken is a CommonJS module without the named export
+import crypto from 'crypto';
+import { Temporal } from '@js-temporal/polyfill'; // Help with dates
+import dotenv from 'dotenv';
+import findConfig from 'find-config';
+
+dotenv.config({ path: findConfig('.env') });
 
 // Access API Key and Secret from .env
 const key_name = process.env.COINBASE_API_KEY_NAME;
@@ -32,7 +36,6 @@ function createJWT(requestDetails) {
   );
 
   console.log(`✅ JWT Creation Success for ${uri}`);
-  // console.log(`\ntoken: \n`, token) // If you want to see it. 
   return token;
   } catch (error) {
       console.error(`❌ JWT Creation Error: for ${uri}`);
@@ -40,9 +43,11 @@ function createJWT(requestDetails) {
   }
 }
 
-async function makeRequest(requestDetails, jwtToken, hideOutput = true) {
+async function makeRequest(requestDetails) {
+  const jwtToken = createJWT(requestDetails);
+ 
   const {url, requestPath, requestParams} = requestDetails
-  let params = `?${requestDetails.requestParams}` || '';
+  const params = requestParams ? `?${requestParams}` : '';
   
   const uri = `https://${url}${requestPath}${params}` // construct full URI
   
@@ -70,7 +75,6 @@ async function makeRequest(requestDetails, jwtToken, hideOutput = true) {
       console.error('Response:', JSON.stringify(data, null, 2));
     } else {
       console.log(`✅ API Success: ${response.status} ${response.statusText} for ${uri}`);
-      hideOutput ? null : console.log(data) // if you want to see
       return data
     }
   } catch (error) {
@@ -78,6 +82,7 @@ async function makeRequest(requestDetails, jwtToken, hideOutput = true) {
   }
 }
 
+// --------- feesRequest --------- 
 const feesRequest = {
   requestPath: '/api/v3/brokerage/transaction_summary',
   requestMethod: 'GET',
@@ -85,11 +90,17 @@ const feesRequest = {
   algorithm: 'ES256',
 };
 
-const feesJwtToken = createJWT(feesRequest);
-makeRequest(feesRequest, feesJwtToken);
 
-let start = Temporal.Now.instant().subtract({ hours: 20 }).epochMilliseconds // 1 hour ago
-let end = Temporal.Now.instant().epochMilliseconds // now
+console.log( await makeRequest(feesRequest))
+
+/* 
+--------- candlesRequest --------- 
+Example that includes a query string. 
+Don't use the query string as part of the JWT creation. 
+Only use the url + path
+*/
+const start = Temporal.Now.instant().subtract({ hours: 20 }).epochMilliseconds // 1 hour ago
+const end = Temporal.Now.instant().epochMilliseconds // now
 
 const candlesRequest = {
   requestPath: "/api/v3/brokerage/products/BTC-GBP/candles",
@@ -102,7 +113,4 @@ const candlesRequest = {
   url: 'api.coinbase.com',
   algorithm: 'ES256'
 };
-const candlesJwtToken = createJWT(candlesRequest);
-makeRequest(candlesRequest, candlesJwtToken, true );
-
-
+console.log( await makeRequest(feesRequest))

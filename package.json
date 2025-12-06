@@ -1,11 +1,16 @@
 {
-  "name": "cb",
+  "name": "cb-api-playground",
   "type": "module",
-  "author": "dazza",
+  "author": "dwkns",
   "main": "app/index.js",
+  "version": "0.0.1",
+  "license": "MIT",
+  "description": "A Javascript playground for accessing the Coinbase API",
   "scripts": {
     "start": "node app/index.js",
-    "dev": "npm run start"
+    "dev": "npm run start",
+    "test": "vitest run",
+    "test:watch": "vitest watch"
   },
   "dependencies": {
     "@js-temporal/polyfill": "^0.5.1",
@@ -13,5 +18,8 @@
     "dotenv": "^17.2.3",
     "find-config": "^1.0.0",
     "jsonwebtoken": "^9.0.3"
+  },
+  "devDependencies": {
+    "vitest": "^1.6.0"
   }
 }
